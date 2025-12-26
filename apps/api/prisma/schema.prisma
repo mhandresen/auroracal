@@ -1,0 +1,215 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum OAuthProvider {
+  google
+  microsoft
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+}
+
+enum LocationType {
+  manual
+}
+
+enum TenantRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+model Tenant {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  name      String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  users    User[]
+  bookings Booking[]
+  members  TenantMember[]
+  sessions Session[]
+}
+
+model TenantMember {
+  id       String     @id @default(uuid())
+  tenantId String
+  userId   String
+  role     TenantRole @default(MEMBER)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, userId])
+  @@index([tenantId])
+  @@index([userId])
+}
+
+model User {
+  id       String  @id @default(uuid())
+  tenantId String
+  email    String
+  name     String?
+  slug     String
+  timezone String  @default("UTC")
+
+  passwordHash    String?
+  emailVerifiedAt DateTime? @db.Timestamptz(6)
+  lastLoginAt     DateTime? @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  accounts           Account[]
+  meetingTypes       MeetingType[]
+  availabilityRules  AvailabilityRule[]
+  availabilityBlocks AvailabilityBlock[]
+  bookings           Booking[]
+  sessions           Session[]
+  tenantMembers      TenantMember[]
+
+  @@unique([tenantId, slug])
+  @@unique([tenantId, email])
+  @@index([tenantId])
+}
+
+model Session {
+  id       String @id @default(uuid())
+  tenantId String
+  userId   String
+
+  tokenHash String @unique
+
+  ip        String?
+  userAgent String?
+
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+  expiresAt DateTime  @db.Timestamptz(6)
+  revokedAt DateTime? @db.Timestamptz(6)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tenantId])
+  @@index([expiresAt])
+}
+
+model Account {
+  id     String @id @default(uuid())
+  userId String
+
+  provider          OAuthProvider
+  providerAccountId String
+
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime? @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model MeetingType {
+  id     String @id @default(uuid())
+  userId String
+
+  slug            String
+  name            String
+  durationMinutes Int    @default(30)
+
+  locationType  LocationType @default(manual)
+  locationValue String?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookings Booking[]
+
+  @@unique([userId, slug])
+  @@index([userId])
+}
+
+model AvailabilityRule {
+  id     String @id @default(uuid())
+  userId String
+
+  // 0 = Sunday, 6 = Saturday
+  dayOfWeek Int
+
+  startMinute Int
+  endMinute   Int
+
+  enabled Boolean @default(true)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, dayOfWeek])
+}
+
+model AvailabilityBlock {
+  id     String @id @default(uuid())
+  userId String
+
+  startsAt DateTime @db.Timestamptz(6)
+  endsAt   DateTime @db.Timestamptz(6)
+
+  reason String?
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startsAt])
+}
+
+model Booking {
+  id String @id @default(uuid())
+
+  tenantId      String
+  userId        String
+  meetingTypeId String
+
+  guestName  String
+  guestEmail String
+
+  startsAt DateTime @db.Timestamptz(6)
+  endsAt   DateTime @db.Timestamptz(6)
+
+  status      BookingStatus @default(CONFIRMED)
+  cancelToken String        @unique
+  cancelledAt DateTime?     @db.Timestamptz(6)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  meetingType MeetingType @relation(fields: [meetingTypeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, startsAt])
+  @@index([tenantId])
+  @@index([userId, startsAt])
+  @@index([meetingTypeId])
+  @@index([cancelToken])
+}
