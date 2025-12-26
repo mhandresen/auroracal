@@ -2,7 +2,6 @@ import { ArrowRight, Clock, Code2, Globe, Shield, Sparkles, Zap } from "lucide-r
 import { splitTagline } from "../../utils/misc";
 import { motion } from "framer-motion";
 import { MiniStat } from "./mini-stat";
-import { MockBookingUI } from "./mock-booking-ui";
 import { Button } from "../custom/button";
 import AvailabilityIntelligenceSnapshot from "./availability-intelligence";
 

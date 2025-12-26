@@ -2,14 +2,11 @@ import * as React from "react";
 import { Sparkles } from "lucide-react";
 import { Badge } from "../ui/badge";
 
-// ✅ use your real components
 import { ProfilePanel } from "@/routes/$tenantSlug/$meetingType/components/profile-panel";
 import { CalendarPanel } from "@/routes/$tenantSlug/$meetingType/components/calendar-panel";
 import { TimeSlotsPanel } from "@/routes/$tenantSlug/$meetingType/components/timeslots-panel";
 import { GlassCard2 } from "@/components/ui/glass-card";
 
-// If you have the CalCell type exported, import it.
-// Otherwise keep the local type below that matches what CalendarPanel needs.
 import type { CalCell } from "@/hooks/use-meeting-type-booking";
 import type { Slot } from "@/types/api";
 
@@ -64,7 +61,6 @@ function buildMockCurrentMonthCells(): CalCell[] {
 }
 
 function buildMockSlotsForDay(ymd: string): ReadonlyArray<readonly [string, Slot[]]> {
-  // Slot.startsAt must be ISO-ish; your formatter likely expects a real date string.
   // Using UTC "Z" is fine for a mock.
   const mk = (hhmm: string) => ({
     startsAt: `${ymd}T${hhmm}:00.000Z`,
@@ -121,7 +117,7 @@ function RealBookingPreviewMock() {
   const mt = {
     name: "30 min call",
     durationMinutes: 30,
-  } as any; // minimal shape used by ProfilePanel
+  } as any;
 
   const today = new Date();
   const title = today.toLocaleDateString(undefined, { month: "long", year: "numeric" });
@@ -133,7 +129,6 @@ function RealBookingPreviewMock() {
 
   const groupedSlots = React.useMemo(() => buildMockSlotsForDay(selectedDay), [selectedDay]);
   const [selectedStartsAt, setSelectedStartsAt] = React.useState<string | null>(`${selectedDay}T10:30:00.000Z`);
-  // Generate selectable days: today + next 13 days (weekdays only for realism)
   const selectableDays = React.useMemo(() => {
     const days = new Set<string>();
     const now = new Date();
@@ -142,7 +137,6 @@ function RealBookingPreviewMock() {
       const date = new Date(now);
       date.setDate(date.getDate() + i);
 
-      // Only weekdays (Monday-Friday) for realistic booking availability
       const dayOfWeek = date.getDay();
       if (dayOfWeek !== 0 && dayOfWeek !== 6) {
         const ymd = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -152,16 +146,6 @@ function RealBookingPreviewMock() {
 
     return days;
   }, []);
-  // ✅ mock “confirmHref” so it looks enabled
-  // ✅ but prevent navigation (below) so nobody gets redirected from home screen
-  const confirmHref = React.useMemo(
-    () => ({
-      to: "/$slug/$meetingType/book",
-      params: { slug: "demo", meetingType: "intro-call" },
-      search: { startsAt: selectedStartsAt ?? `${selectedDay}T10:30:00.000Z` },
-    }),
-    [selectedDay, selectedStartsAt]
-  );
 
   return (
     <GlassCard2>
@@ -189,9 +173,7 @@ function RealBookingPreviewMock() {
             const now = new Date();
             return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
           }}
-          onSelectDay={() => {
-            // keep static for a homepage preview (feel free to implement state if you want it interactive)
-          }}
+          onSelectDay={() => {}}
           onPrevMonth={() => {}}
           onNextMonth={() => {}}
         />
