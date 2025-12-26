@@ -13,7 +13,7 @@ export function Footer({ productName }: { productName: string }) {
               <div className='text-sm font-semibold text-zinc-100'>{productName}</div>
             </div>
             <p className='mt-3 max-w-sm text-sm text-zinc-400'>
-              Modern scheduling for developers, consultants, and teams who want clean UX.
+              Modern scheduling for professionals who want clean UX and fast workflows.
             </p>
           </div>
 
@@ -42,18 +42,6 @@ export function Footer({ productName }: { productName: string }) {
                 Self-hosting
               </a>
             </div>
-            <div className='space-y-2'>
-              <div className='text-zinc-200'>Company</div>
-              <a className='block text-zinc-400 hover:text-zinc-200' href='#'>
-                Security
-              </a>
-              <a className='block text-zinc-400 hover:text-zinc-200' href='#'>
-                Privacy
-              </a>
-              <a className='block text-zinc-400 hover:text-zinc-200' href='#'>
-                Contact
-              </a>
-            </div>
           </div>
         </div>
 
@@ -62,14 +50,14 @@ export function Footer({ productName }: { productName: string }) {
             © {new Date().getFullYear()} {productName}. All rights reserved.
           </div>
           <div className='flex items-center gap-4'>
-            <a className='hover:text-zinc-300' href='#'>
-              Terms
-            </a>
-            <a className='hover:text-zinc-300' href='#'>
+            <a className='hover:text-zinc-300' href='/privacy'>
               Privacy
             </a>
-            <a className='hover:text-zinc-300' href='#'>
-              Status
+            <a className='hover:text-zinc-300' href='/terms'>
+              Terms
+            </a>
+            <a className='hover:text-zinc-300' href='mailto:hello@auroracal.com'>
+              Contact
             </a>
           </div>
         </div>
