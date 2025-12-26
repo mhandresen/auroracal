@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
-  const app = (await NestFactory.create(ApiModule)).setGlobalPrefix('api/v1');
+  const app = (await NestFactory.create(ApiModule)).setGlobalPrefix('_api/v1');
 
   const config = new DocumentBuilder()
     .setTitle('Meeting Scheduler API')
