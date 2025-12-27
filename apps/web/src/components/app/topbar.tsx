@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 async function logout() {
-  await fetch("/api/v1/auth/logout", {
+  await fetch("/_api/v1/auth/logout", {
     method: "POST",
     credentials: "include",
   });

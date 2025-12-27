@@ -31,7 +31,7 @@ function BookPage() {
 
   const publicQuery = useQuery<PublicSlugResponse>({
     queryKey: ["public-slug", tenantSlug],
-    queryFn: () => api<PublicSlugResponse>(`/api/v1/public/${tenantSlug}`),
+    queryFn: () => api<PublicSlugResponse>(`/_api/v1/public/${tenantSlug}`),
   });
 
   const mt = useMemo(() => {
@@ -57,7 +57,7 @@ function BookPage() {
         guestName: guestName.trim(),
         guestEmail: guestEmail.trim(),
       };
-      return api<BookResponse>(`/api/v1/public/${tenantSlug}/book`, {
+      return api<BookResponse>(`/_api/v1/public/${tenantSlug}/book`, {
         method: "POST",
         body,
       } as any);

@@ -71,7 +71,7 @@ function SuccessPage() {
 
   const bookingQuery = useQuery<PublicBookingResponse>({
     queryKey: ["public-booking", bookingId],
-    queryFn: () => api<PublicBookingResponse>(`/api/v1/public/booking/${bookingId}`),
+    queryFn: () => api<PublicBookingResponse>(`/_api/v1/public/booking/${bookingId}`),
   });
 
   if (bookingQuery.isLoading) {

@@ -59,14 +59,14 @@ function CancelBookingPage() {
   // Fetch booking info for nice UI + links (refresh-proof)
   const bookingQuery = useQuery<PublicBookingResponse>({
     queryKey: ["public-booking", id],
-    queryFn: () => api<PublicBookingResponse>(`/api/v1/public/booking/${id}`),
+    queryFn: () => api<PublicBookingResponse>(`/_api/v1/public/booking/${id}`),
   });
 
   const cancelMutation = useMutation({
     mutationFn: async () => {
       if (!token) throw new Error("Missing cancel token");
       // tweak this URL if your controller path differs
-      return api<CancelResponse>(`/api/v1/public/booking/${id}/cancel?token=${encodeURIComponent(token)}`, {
+      return api<CancelResponse>(`/_api/v1/public/booking/${id}/cancel?token=${encodeURIComponent(token)}`, {
         method: "POST",
       });
     },

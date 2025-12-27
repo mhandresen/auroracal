@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ProfileHeader } from "@/components/profile-header";
 import { MeetingTypeCard } from "@/components/meeting-type-card";
 import { api } from "@/lib/api";
@@ -7,7 +7,24 @@ import { PublicSlugSkeleton } from "@/components/loading/public-slug-skeleton";
 import { NotFound } from "@/components/not-found";
 import type { PublicSlugResponse } from "@/types/api";
 
+const RESERVED = new Set([
+  "_api",
+  "api",
+  "login",
+  "register",
+  "auth",
+  "dashboard",
+  "settings",
+  "privacy",
+  "terms",
+  "app",
+  "docs",
+]);
+
 export const Route = createFileRoute("/$tenantSlug/")({
+  beforeLoad: ({ params }) => {
+    if (RESERVED.has(params.tenantSlug)) throw notFound();
+  },
   component: SlugPage,
 });
 
@@ -16,7 +33,7 @@ function SlugPage() {
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["public-slug", tenantSlug],
-    queryFn: () => api<PublicSlugResponse>(`api/v1/public/${tenantSlug}`),
+    queryFn: () => api<PublicSlugResponse>(`/_api/v1/public/${tenantSlug}`),
   });
 
   return (

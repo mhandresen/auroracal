@@ -31,7 +31,7 @@ export function useMeetingTypeBooking({ tenantSlug, meetingType }: UseMeetingTyp
 
   const publicQuery = useQuery<PublicSlugResponse>({
     queryKey: ["public-slug", tenantSlug],
-    queryFn: () => api<PublicSlugResponse>(`/api/v1/public/${tenantSlug}`),
+    queryFn: () => api<PublicSlugResponse>(`/_api/v1/public/${tenantSlug}`),
   });
 
   const mt = useMemo(() => {
@@ -43,7 +43,7 @@ export function useMeetingTypeBooking({ tenantSlug, meetingType }: UseMeetingTyp
     queryKey: ["slots", tenantSlug, meetingType, range.from, range.to],
     queryFn: () =>
       api<SlotsResponse>(
-        `/api/v1/public/${tenantSlug}/slots?` +
+        `/_api/v1/public/${tenantSlug}/slots?` +
           new URLSearchParams({
             meetingType,
             from: range.from,

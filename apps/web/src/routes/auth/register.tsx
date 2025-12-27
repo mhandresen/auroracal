@@ -21,7 +21,7 @@ const RegisterSchema = z.object({
 type RegisterForm = z.infer<typeof RegisterSchema>;
 
 async function registerRequest(input: { name?: string; email: string; password: string; timezone: string }) {
-  const res = await fetch("/api/v1/auth/register", {
+  const res = await fetch("/_api/v1/auth/register", {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },

@@ -7,13 +7,13 @@ export const Route = createFileRoute("/dashboard/")({
 });
 
 async function me() {
-  const res = await fetch("/api/v1/auth/me", { credentials: "include" });
+  const res = await fetch("/_api/v1/auth/me", { credentials: "include" });
   if (!res.ok) throw new Error("Unauthorized");
   return res.json();
 }
 
 async function logout() {
-  await fetch("/api/v1/auth/logout", { method: "POST", credentials: "include" });
+  await fetch("/_api/v1/auth/logout", { method: "POST", credentials: "include" });
 }
 
 function RouteComponent() {

@@ -20,7 +20,7 @@ const LoginSchema = z.object({
 type LoginForm = z.infer<typeof LoginSchema>;
 
 async function loginRequest(input: { email: string; password: string }) {
-  const res = await fetch("/api/v1/auth/login", {
+  const res = await fetch("/_api/v1/auth/login", {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },

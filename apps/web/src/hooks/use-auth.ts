@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 async function fetchMe() {
-  const res = await fetch("/api/v1/auth/me", { credentials: "include" });
+  const res = await fetch("/_api/v1/auth/me", { credentials: "include" });
 
   if (!res.ok) {
     if (res.status === 401) return null;
