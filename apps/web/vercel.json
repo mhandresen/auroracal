@@ -1,9 +1,9 @@
 {
-  "routes": [
-    { "handle": "filesystem" },
-
-    { "src": "^/_api/(.*)$", "dest": "${API_ORIGIN}/_api/$1" },
-
-    { "src": "^(.*)$", "dest": "/" }
+  "rewrites": [
+    {
+      "source": "/_api/:path*",
+      "destination": "https://api-production-44e4.up.railway.app/_api/:path*"
+    },
+    { "source": "/(.*)", "destination": "/" }
   ]
 }
