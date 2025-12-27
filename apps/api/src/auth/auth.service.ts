@@ -237,4 +237,36 @@ export class AuthService {
       data: { revokedAt: new Date() },
     });
   }
+
+  async bootstrap() {
+    const password = process.env.BOOTSTRAP_ADMIN_PASSWORD ?? 'Test1234!';
+    const passwordHash = await argon2.hash(password);
+
+    const tenant = await this.prisma.tenant.create({
+      data: {
+        name: 'Aurora Calibration',
+        slug: 'auroracal',
+      },
+    });
+    const user = await this.prisma.user.create({
+      data: {
+        email: 'admin@auroracal.dev',
+        name: 'Admin',
+        slug: 'admin',
+        timezone: 'Europe/Oslo',
+        passwordHash,
+        tenantId: tenant.id,
+      },
+    });
+
+    await this.prisma.tenantMember.create({
+      data: {
+        userId: user.id,
+        tenantId: tenant.id,
+        role: TenantRole.OWNER,
+      },
+    });
+
+    return { ok: true };
+  }
 }

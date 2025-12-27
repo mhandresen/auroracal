@@ -81,4 +81,9 @@ export class AuthController {
     });
     return { ok: true };
   }
+
+  @Post('__bootstrap')
+  async bootstrap() {
+    return this.auth.bootstrap();
+  }
 }
