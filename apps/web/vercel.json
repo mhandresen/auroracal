@@ -1,6 +1,9 @@
 {
-  "rewrites": [
-    { "source": "/_api/:path*", "destination": "${API_ORIGIN}/_api/:path*" },
-    { "source": "/(.*)", "destination": "/" }
+  "routes": [
+    { "handle": "filesystem" },
+
+    { "src": "^/_api/(.*)$", "dest": "${API_ORIGIN}/_api/$1" },
+
+    { "src": "^(.*)$", "dest": "/" }
   ]
 }
